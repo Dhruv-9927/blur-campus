@@ -1,0 +1,31 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  /* Light Mode (Cozy Cream) */
+  --background: #fdfbf7;
+  --foreground: #2d2420;
+  --card-bg: #ffffff;
+  --card-border: #e6e1db;
+  --accent-pink: #ff8fa3;
+  --input-bg: #ffffff;
+  --muted: #8c817c;
+}
+
+[data-theme="dark"] {
+  /* Dark Mode (Cozy Brown) */
+  --background: #1a1614;
+  --foreground: #ede0d4;
+  --card-bg: #241e1b;
+  --card-border: #3d322e;
+  --accent-pink: #ff8fa3;
+  --input-bg: #2a2421;
+  --muted: #a89f99;
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
