@@ -15,18 +15,18 @@ export default function LoginPage() {
     const router = useRouter()
 
     // Check if JS is running
-    useEffect(() => {
-        alert('Login Page JS Loaded')
-    }, [])
+    // useEffect(() => {
+    //     alert('Login Page JS Loaded')
+    // }, [])
 
     async function handleManualSubmit(e: React.MouseEvent<HTMLButtonElement>) {
         e.preventDefault()
-        alert('Manual submit clicked') // Debug
+        // alert('Manual submit clicked') // Debug
 
         // Manually gather form data
         const form = e.currentTarget.closest('form')
         if (!form) {
-            alert('Form not found')
+            // alert('Form not found')
             return
         }
         const formData = new FormData(form)
@@ -39,21 +39,21 @@ export default function LoginPage() {
             const action = isLogin ? login : signup
             const result = await action(formData)
             console.log('Login result:', result)
-            alert('Server response: ' + JSON.stringify(result))
+            // alert('Server response: ' + JSON.stringify(result)) 
 
             if (result?.error) {
                 setError(result.error)
                 alert('Error: ' + result.error)
             } else if ((result as any)?.message) {
                 setMessage((result as any).message)
-                alert('Message: ' + (result as any).message)
+                // alert('Message: ' + (result as any).message)
             } else if ((result as any)?.success) {
                 console.log('Login successful, redirecting...')
                 alert('Login successful! Redirecting to profile...')
 
                 window.location.replace('/profile')
             } else {
-                alert('Unknown result format: ' + JSON.stringify(result))
+                // alert('Unknown result format: ' + JSON.stringify(result))
             }
         } catch (err) {
             console.error(err)
@@ -65,11 +65,6 @@ export default function LoginPage() {
 
     return (
         <div className="min-h-screen flex flex-col items-center justify-center bg-[#fdfbf7] p-4 font-sans text-[#2d2420]">
-            <div className="bg-red-500 text-white p-4 w-full text-center font-bold mb-4 rounded-lg shadow-lg animate-pulse">
-                DEBUG MODE: IF YOU SEE THIS, CODE IS UPDATED.
-                <br />
-                JS LOADED ALERT SHOULD APPEAR.
-            </div>
 
             {/* Title Section */}
             <div className="text-center mb-8 space-y-2">
