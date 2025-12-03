@@ -1,7 +1,8 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { login, signup } from './actions'
+import { useRouter } from 'next/navigation'
 import { motion } from 'framer-motion'
 import { Loader2, ArrowRight, Mail, Lock, User } from 'lucide-react'
 
@@ -11,18 +12,52 @@ export default function LoginPage() {
     const [message, setMessage] = useState<string | null>(null)
     const [error, setError] = useState<string | null>(null)
 
-    async function handleSubmit(formData: FormData) {
+    const router = useRouter()
+
+    // Check if JS is running
+    useEffect(() => {
+        alert('Login Page JS Loaded')
+    }, [])
+
+    async function handleManualSubmit(e: React.MouseEvent<HTMLButtonElement>) {
+        e.preventDefault()
+        alert('Manual submit clicked') // Debug
+
+        // Manually gather form data
+        const form = e.currentTarget.closest('form')
+        if (!form) {
+            alert('Form not found')
+            return
+        }
+        const formData = new FormData(form)
+
         setLoading(true)
         setError(null)
         setMessage(null)
 
-        const action = isLogin ? login : signup
-        const result = await action(formData)
+        try {
+            const action = isLogin ? login : signup
+            const result = await action(formData)
+            console.log('Login result:', result)
+            alert('Server response: ' + JSON.stringify(result))
 
-        if (result?.error) {
-            setError(result.error)
-        } else if ((result as any)?.message) {
-            setMessage((result as any).message)
+            if (result?.error) {
+                setError(result.error)
+                alert('Error: ' + result.error)
+            } else if ((result as any)?.message) {
+                setMessage((result as any).message)
+                alert('Message: ' + (result as any).message)
+            } else if ((result as any)?.success) {
+                console.log('Login successful, redirecting...')
+                alert('Login successful! Redirecting to profile...')
+
+                window.location.replace('/profile')
+            } else {
+                alert('Unknown result format: ' + JSON.stringify(result))
+            }
+        } catch (err) {
+            console.error(err)
+            alert('Exception: ' + err)
         }
 
         setLoading(false)
@@ -30,6 +65,11 @@ export default function LoginPage() {
 
     return (
         <div className="min-h-screen flex flex-col items-center justify-center bg-[#fdfbf7] p-4 font-sans text-[#2d2420]">
+            <div className="bg-red-500 text-white p-4 w-full text-center font-bold mb-4 rounded-lg shadow-lg animate-pulse">
+                DEBUG MODE: IF YOU SEE THIS, CODE IS UPDATED.
+                <br />
+                JS LOADED ALERT SHOULD APPEAR.
+            </div>
 
             {/* Title Section */}
             <div className="text-center mb-8 space-y-2">
@@ -56,6 +96,7 @@ export default function LoginPage() {
                 {/* Toggle */}
                 <div className="flex mb-10 bg-[#f5f0eb] rounded-full p-1.5">
                     <button
+                        type="button"
                         onClick={() => setIsLogin(true)}
                         className={`flex-1 py-2.5 text-xs font-bold tracking-widest uppercase rounded-full transition-all duration-300 ${isLogin ? 'bg-white text-[#2d2420] shadow-sm' : 'text-[#8c817c] hover:text-[#5c5450]'
                             }`}
@@ -63,6 +104,7 @@ export default function LoginPage() {
                         Login
                     </button>
                     <button
+                        type="button"
                         onClick={() => setIsLogin(false)}
                         className={`flex-1 py-2.5 text-xs font-bold tracking-widest uppercase rounded-full transition-all duration-300 ${!isLogin ? 'bg-white text-[#2d2420] shadow-sm' : 'text-[#8c817c] hover:text-[#5c5450]'
                             }`}
@@ -71,7 +113,7 @@ export default function LoginPage() {
                     </button>
                 </div>
 
-                <form action={handleSubmit} className="space-y-6">
+                <form className="space-y-6" onSubmit={(e) => e.preventDefault()}>
                     {!isLogin && (
                         <div className="space-y-1">
                             <label className="text-[10px] font-bold text-[#b0a8a4] uppercase tracking-widest pl-1">Full Name</label>
@@ -133,7 +175,8 @@ export default function LoginPage() {
 
                     <div className="pt-4">
                         <button
-                            type="submit"
+                            type="button"
+                            onClick={handleManualSubmit}
                             disabled={loading}
                             className="w-full bg-[#1a1614] text-[#ede0d4] py-4 rounded-xl font-serif text-lg italic hover:scale-[1.02] active:scale-[0.98] transition-all duration-300 shadow-lg flex items-center justify-center group"
                         >

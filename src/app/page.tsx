@@ -20,7 +20,7 @@ export default async function Home() {
     .eq('id', user.id)
     .single()
 
-  if (!profile || !profile.full_name) {
+  if (!profile || !profile.full_name || !profile.major) {
     redirect('/profile/setup')
   }
 
@@ -43,7 +43,7 @@ export default async function Home() {
             <MessageCircle className="w-6 h-6 text-[#2d2420]" />
             {/* Notification dot could go here */}
           </Link>
-          <Link href="/profile/setup" className="w-8 h-8 rounded-full bg-[#e6e1db] overflow-hidden border border-[#d6d1cd]">
+          <Link href="/profile" className="w-8 h-8 rounded-full bg-[#e6e1db] overflow-hidden border border-[#d6d1cd]">
             {/* Small avatar preview */}
             {profile.profile_pic_url ? (
               <img src={profile.profile_pic_url} alt="Profile" className="w-full h-full object-cover" />
@@ -51,6 +51,16 @@ export default async function Home() {
               <div className="w-full h-full bg-[#d4a373]" />
             )}
           </Link>
+          <form action={async () => {
+            'use server'
+            const supabase = await createClient()
+            await supabase.auth.signOut()
+            redirect('/login')
+          }}>
+            <button className="text-xs font-bold uppercase tracking-widest text-[#b0a8a4] hover:text-[#d4a373]">
+              Logout
+            </button>
+          </form>
         </div>
       </header>
 

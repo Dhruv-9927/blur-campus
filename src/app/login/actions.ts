@@ -2,6 +2,7 @@
 
 import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
+import { headers } from 'next/headers'
 import { createClient } from '@/utils/supabase/server'
 
 export async function login(formData: FormData) {
@@ -19,12 +20,12 @@ export async function login(formData: FormData) {
         return { error: error.message }
     }
 
-    revalidatePath('/', 'layout')
-    redirect('/')
+    return { success: true }
 }
 
 export async function signup(formData: FormData) {
     const supabase = await createClient()
+    const origin = headers().get('origin')
 
     const email = formData.get('email') as string
     const password = formData.get('password') as string
@@ -42,6 +43,7 @@ export async function signup(formData: FormData) {
             data: {
                 full_name: fullName,
             },
+            emailRedirectTo: `${origin}/auth/callback?next=/profile`,
         },
     })
 

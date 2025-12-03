@@ -56,5 +56,5 @@ export async function updateProfile(formData: FormData) {
     }
 
     revalidatePath('/', 'layout')
-    redirect('/')
+    redirect('/profile')
 }
