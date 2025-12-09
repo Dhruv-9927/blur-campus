@@ -36,6 +36,36 @@ export async function updateProfile(formData: FormData) {
 
     const profilePicUrl = formData.get('profilePicUrl') as string
 
+    const anthemDataRaw = formData.get('anthemData') as string
+    let anthemData = null
+    if (anthemDataRaw) {
+        try {
+            anthemData = JSON.parse(anthemDataRaw)
+        } catch (e) {
+            console.error("Failed to parse anthem data", e)
+        }
+    }
+
+    const greenFlagsRaw = formData.get('greenFlags') as string
+    let greenFlags = []
+    if (greenFlagsRaw) {
+        try {
+            greenFlags = JSON.parse(greenFlagsRaw)
+        } catch (e) {
+            console.error("Failed to parse green flags", e)
+        }
+    }
+
+    const redFlagsRaw = formData.get('redFlags') as string
+    let redFlags = []
+    if (redFlagsRaw) {
+        try {
+            redFlags = JSON.parse(redFlagsRaw)
+        } catch (e) {
+            console.error("Failed to parse red flags", e)
+        }
+    }
+
     const { error } = await supabase
         .from('users')
         .upsert({
@@ -48,6 +78,9 @@ export async function updateProfile(formData: FormData) {
             interested_in: interestedIn,
             prompts: prompts,
             profile_pic_url: profilePicUrl,
+            anthem_data: anthemData,
+            green_flags: greenFlags,
+            red_flags: redFlags,
         })
         .select()
 

@@ -2,6 +2,7 @@ import { createClient } from '@/utils/supabase/server'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowLeft, Edit2 } from 'lucide-react'
+import ProfileAnthem from '@/components/ProfileAnthem'
 
 export default async function ProfilePage() {
     const supabase = await createClient()
@@ -37,9 +38,9 @@ export default async function ProfilePage() {
                 </header>
 
                 <div className="bg-white rounded-[2.5rem] p-8 md:p-12 shadow-[0_20px_40px_-15px_rgba(0,0,0,0.05)] border border-[#f0ebe6]">
-                    <div className="flex flex-col md:flex-row gap-12 items-start">
+                    <div className="flex flex-col gap-12 items-center">
                         {/* Avatar */}
-                        <div className="w-full md:w-1/3 flex flex-col items-center">
+                        <div className="w-full flex flex-col items-center">
                             <div className="w-64 h-80 rounded-t-[10rem] rounded-b-[2.5rem] overflow-hidden border-4 border-[#fff0f3] shadow-lg mb-6 relative group">
                                 {profile.profile_pic_url ? (
                                     <img src={profile.profile_pic_url} alt={profile.full_name} className="w-full h-full object-cover" />
@@ -54,7 +55,7 @@ export default async function ProfilePage() {
                         </div>
 
                         {/* Details */}
-                        <div className="w-full md:w-2/3 space-y-8">
+                        <div className="w-full space-y-8">
                             <div className="grid grid-cols-2 gap-6">
                                 <div>
                                     <label className="text-[10px] font-bold text-[#b0a8a4] uppercase tracking-widest block mb-1">Identity</label>
@@ -64,6 +65,34 @@ export default async function ProfilePage() {
                                     <label className="text-[10px] font-bold text-[#b0a8a4] uppercase tracking-widest block mb-1">Interested In</label>
                                     <p className="text-xl font-serif text-[#2d2420]">{profile.interested_in || 'Not specified'}</p>
                                 </div>
+                            </div>
+
+                            {/* Flags */}
+                            <div className="space-y-4">
+                                {profile.green_flags && profile.green_flags.length > 0 && (
+                                    <div>
+                                        <h3 className="font-bold text-xs uppercase tracking-widest text-[#b0a8a4] mb-2">Green Flags</h3>
+                                        <div className="flex flex-wrap gap-2">
+                                            {profile.green_flags.map((flag: string) => (
+                                                <span key={flag} className="px-3 py-1 bg-green-100 text-green-800 rounded-full text-xs font-bold uppercase tracking-wide">
+                                                    {flag}
+                                                </span>
+                                            ))}
+                                        </div>
+                                    </div>
+                                )}
+                                {profile.red_flags && profile.red_flags.length > 0 && (
+                                    <div>
+                                        <h3 className="font-bold text-xs uppercase tracking-widest text-[#b0a8a4] mb-2">Red Flags</h3>
+                                        <div className="flex flex-wrap gap-2">
+                                            {profile.red_flags.map((flag: string) => (
+                                                <span key={flag} className="px-3 py-1 bg-red-100 text-red-800 rounded-full text-xs font-bold uppercase tracking-wide">
+                                                    {flag}
+                                                </span>
+                                            ))}
+                                        </div>
+                                    </div>
+                                )}
                             </div>
 
                             <div className="space-y-6">
@@ -79,6 +108,12 @@ export default async function ProfilePage() {
                                     <p className="text-[#8c817c] italic">No prompts answered yet.</p>
                                 )}
                             </div>
+
+                            {profile.anthem_data && (
+                                <div className="mt-8 pt-8 border-t border-[#f0ebe6]">
+                                    <ProfileAnthem song={profile.anthem_data} />
+                                </div>
+                            )}
                         </div>
                     </div>
                 </div>

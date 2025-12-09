@@ -27,6 +27,8 @@ export const metadata: Metadata = {
   description: "Connect with students on your campus.",
 };
 
+import MobileContainer from "@/components/MobileContainer";
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -37,7 +39,9 @@ export default function RootLayout({
       <body
         className={`${inter.variable} ${robotoMono.variable} ${playfair.variable} ${dancingScript.variable} antialiased`}
       >
-        {children}
+        <MobileContainer>
+          {children}
+        </MobileContainer>
       </body>
     </html>
   );

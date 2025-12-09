@@ -6,6 +6,9 @@ import { createClient } from '@/utils/supabase/client'
 import { Loader2, Upload, Sparkles, ArrowUpRight, Star } from 'lucide-react'
 import { motion } from 'framer-motion'
 import ThemeToggle from '@/components/ThemeToggle'
+import SongSearch from '@/components/SongSearch'
+import ProfileAnthem from '@/components/ProfileAnthem'
+import FlagSelector from '@/components/FlagSelector'
 
 const PROMPT_OPTIONS = [
     "My absolute favorite spot to cry during finals week is...",
@@ -20,6 +23,9 @@ export default function ProfileSetup() {
     const [loading, setLoading] = useState(false)
     const [avatarUrl, setAvatarUrl] = useState<string | null>(null)
     const [uploading, setUploading] = useState(false)
+    const [anthem, setAnthem] = useState<any>(null)
+    const [greenFlags, setGreenFlags] = useState<string[]>([])
+    const [redFlags, setRedFlags] = useState<string[]>([])
 
     const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
         try {
@@ -57,11 +63,11 @@ export default function ProfileSetup() {
             <ThemeToggle />
 
             <div className="max-w-7xl mx-auto px-6 py-12 md:py-20">
-                <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 items-start">
+                <div className="grid grid-cols-1 gap-16 items-start">
 
                     {/* Left Column: Header & Photo */}
                     <motion.div
-                        className="lg:col-span-5 space-y-12"
+                        className="space-y-12"
                         initial={{ opacity: 0, x: -30 }}
                         animate={{ opacity: 1, x: 0 }}
                         transition={{ duration: 0.8, ease: "easeOut" }}
@@ -130,6 +136,9 @@ export default function ProfileSetup() {
                                     }
                                 }} className="w-full space-y-6">
                                     <input type="hidden" name="profilePicUrl" value={avatarUrl || ''} />
+                                    <input type="hidden" name="anthemData" value={anthem ? JSON.stringify(anthem) : ''} />
+                                    <input type="hidden" name="greenFlags" value={JSON.stringify(greenFlags)} />
+                                    <input type="hidden" name="redFlags" value={JSON.stringify(redFlags)} />
 
                                     <div className="space-y-1">
                                         <label className="text-[10px] font-bold text-[#b0a8a4] uppercase tracking-widest pl-1">Your Name</label>
@@ -194,9 +203,9 @@ export default function ProfileSetup() {
                         </div>
                     </motion.div>
 
-                    {/* Right Column: Prompts */}
+                    {/* Right Column: Prompts & Anthem */}
                     <motion.div
-                        className="lg:col-span-7 pt-12 lg:pt-32 space-y-12"
+                        className="pt-12 space-y-12"
                         initial={{ opacity: 0, y: 40 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.8, delay: 0.2, ease: "easeOut" }}
@@ -206,6 +215,35 @@ export default function ProfileSetup() {
                             <p className="text-[#8c817c] text-sm max-w-md">
                                 Select prompts that speak to your soul. Use our AI muse if you get stuck, but keep it authentic.
                             </p>
+                        </div>
+
+                        {/* Flags Section */}
+                        <FlagSelector
+                            greenFlags={greenFlags}
+                            redFlags={redFlags}
+                            setGreenFlags={setGreenFlags}
+                            setRedFlags={setRedFlags}
+                        />
+
+                        {/* Spotify Anthem Section */}
+                        <div className="space-y-4">
+                            <h3 className="font-bold text-xs uppercase tracking-widest text-[#b0a8a4]">Profile Anthem</h3>
+                            <div className="bg-white p-6 rounded-2xl shadow-sm border border-[#f0ebe6]">
+                                {anthem ? (
+                                    <div className="relative">
+                                        <ProfileAnthem song={anthem} />
+                                        <button
+                                            type="button"
+                                            onClick={() => setAnthem(null)}
+                                            className="absolute -top-2 -right-2 bg-white rounded-full p-1 shadow-md border border-[#f0ebe6] text-xs font-bold text-red-500 hover:bg-red-50"
+                                        >
+                                            Change
+                                        </button>
+                                    </div>
+                                ) : (
+                                    <SongSearch onSelect={setAnthem} />
+                                )}
+                            </div>
                         </div>
 
                         <div className="space-y-8">
